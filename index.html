@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050505">
+<title>Nebula.Now</title>
+<style>
+:root{
+  --bg:#050505;
+  --panel:#090909;
+  --panel2:#0c0c0c;
+  --line:#1a1a1a;
+  --line2:#242424;
+  --text:#f4f4f4;
+  --muted:#858585;
+  --soft:#bdbdbd;
+  --accent:#f3f3f3;
+  --green:#9cff92;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+button,input{font:inherit}
+a{color:inherit;text-decoration:none}
+::selection{background:#f2f2f2;color:#000}
+.topbar{
+  position:sticky;top:0;z-index:50;height:58px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 7vw;background:rgba(5,5,5,.86);backdrop-filter:blur(14px);
+  border-bottom:1px solid #111;
+}
+.brand{display:flex;align-items:center;gap:9px;font-weight:750;font-size:13px;letter-spacing:-.2px}
+.secret-logo{display:grid;place-items:center;padding:7px;border-radius:5px;cursor:pointer}.secret-logo:focus-visible{outline:2px solid #9cff92}.brand-mark{width:14px;height:14px;border:1px solid #666;display:grid;place-items:center;transform:rotate(45deg)}
+.brand-mark:after{content:"";width:5px;height:5px;background:#fff}
+.nav{display:flex;gap:24px;font-size:11px;color:#aaa}
+.nav a{transition:.18s ease}
+.nav a:hover{color:#fff;transform:translateY(-1px)}
+.nav-cta{font-size:11px;border:1px solid #262626;padding:7px 12px;border-radius:6px;color:#ddd;background:#090909;transition:.2s}
+.nav-cta:hover{border-color:#555;transform:translateY(-2px)}
+.hero{max-width:1120px;margin:0 auto;padding:82px 24px 52px;text-align:center}
+.eyebrow{font-size:9px;color:#737373;text-transform:uppercase;letter-spacing:2.4px;margin-bottom:17px}
+.hero h1{font-size:clamp(34px,5vw,60px);line-height:1.02;letter-spacing:-2.8px;margin:0;font-weight:720}
+.hero p{max-width:640px;margin:18px auto 0;color:#777;font-size:12px;line-height:1.65}
+.hero-actions{display:flex;justify-content:center;gap:9px;margin-top:24px}
+.btn{border:1px solid #242424;background:#0a0a0a;color:#eee;padding:10px 16px;border-radius:7px;font-size:11px;cursor:pointer;transition:transform .18s cubic-bezier(.2,.9,.2,1.25),border-color .18s,background .18s}
+.btn:hover{transform:translateY(-3px) scale(1.02);border-color:#565656;background:#111}
+.btn:active{transform:translateY(0) scale(.96)}
+.btn.primary{background:#f0f0f0;color:#090909;border-color:#f0f0f0}
+.shell{max-width:1120px;margin:0 auto;padding:0 24px 72px}
+.overview{display:grid;grid-template-columns:1.72fr .72fr;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#070707;min-height:435px}
+.main-card{padding:22px;border-right:1px solid var(--line);position:relative}
+.card-title{font-size:12px;font-weight:650;margin:0 0 5px}
+.card-sub{font-size:10px;color:#6f6f6f;margin:0 0 17px}
+.editor{height:334px;border:1px solid #181818;background:#050505;border-radius:5px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.editor-head{height:35px;display:flex;align-items:center;justify-content:space-between;padding:0 11px;border-bottom:1px solid #151515;font-size:9px;color:#777}
+.dots{display:flex;gap:5px} .dots i{width:5px;height:5px;border-radius:50%;background:#444}
+.editor-toolbar{display:flex;gap:6px}
+.mini{border:1px solid #1d1d1d;border-radius:4px;padding:4px 7px;background:#080808;color:#777}
+.editor-body{display:grid;grid-template-columns:155px 1fr;height:calc(100% - 35px)}
+.sidebar{border-right:1px solid #151515;padding:9px 7px;background:#070707}
+.side-label{font-size:8px;color:#555;padding:6px 7px;text-transform:uppercase;letter-spacing:1px}
+.side-item{display:flex;align-items:center;gap:7px;padding:7px;border-radius:4px;color:#777;font-size:9px;cursor:pointer}
+.side-item.active{background:#101010;color:#ddd}
+.side-item:before{content:"";width:5px;height:5px;border:1px solid #4d4d4d}
+.codepane{position:relative;padding:13px 15px;overflow:hidden;background-image:linear-gradient(#0b0b0b 1px,transparent 1px),linear-gradient(90deg,#0b0b0b 1px,transparent 1px);background-size:22px 22px}
+.codepane pre{margin:0;font:9px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#9c9c9c;white-space:pre-wrap}
+.codepane .hi{color:#eee}
+.cursor-line{position:absolute;left:15px;right:15px;bottom:17px;height:1px;background:#171717}
+.right-stats{padding:22px;display:flex;flex-direction:column;gap:12px}
+.statbox{border:1px solid #191919;border-radius:6px;background:#090909;padding:15px}
+.statbox .icon{width:26px;height:26px;border:1px solid #2c2c2c;border-radius:50%;display:grid;place-items:center;margin-bottom:12px;font-size:12px}
+.statbox h3{font-size:10px;margin:0 0 5px}
+.statbox p{font-size:9px;line-height:1.55;color:#666;margin:0}
+.progress{height:4px;background:#151515;border-radius:20px;margin-top:12px;overflow:hidden}
+.progress span{display:block;height:100%;background:#eaeaea;width:88%;border-radius:20px}
+.split-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-top:0;border-radius:0 0 9px 9px;overflow:hidden}
+.split-card{padding:28px 25px;min-height:180px;position:relative}
+.split-card+ .split-card{border-left:1px solid var(--line)}
+.split-card h3{font-size:12px;margin:0 0 6px}
+.split-card p{max-width:380px;color:#686868;font-size:10px;line-height:1.6;margin:0}
+.list-mini{margin-top:18px;display:grid;gap:7px}
+.list-mini div{border:1px solid #171717;border-radius:6px;padding:9px 11px;font-size:9px;color:#888;display:flex;justify-content:space-between;background:#080808}
+.globe{position:absolute;width:180px;height:180px;right:36px;bottom:-90px;border:1px solid #5a5a5a;border-radius:50%;box-shadow:0 0 26px rgba(255,255,255,.18),inset 0 0 22px rgba(255,255,255,.05);opacity:.7}
+.globe:before,.globe:after{content:"";position:absolute;inset:20px;border:1px solid #202020;border-radius:50%}
+.globe:after{inset:55px 8px;border-left-color:transparent;border-right-color:transparent}
+.section{max-width:1120px;margin:0 auto;padding:80px 24px}
+.section-head{text-align:center;margin-bottom:30px}
+.section-head .kicker{font-size:9px;letter-spacing:2px;color:#666;text-transform:uppercase}
+.section-head h2{font-size:30px;letter-spacing:-1.3px;margin:8px 0 8px}
+.section-head p{font-size:11px;color:#666;margin:0}
+.feature-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.feature{border:1px solid #191919;background:#080808;border-radius:7px;padding:18px;min-height:110px;transition:.2s}
+.feature:hover{transform:translateY(-4px);border-color:#353535}
+.feature b{display:block;font-size:10px;margin-bottom:6px}
+.feature span{font-size:9px;line-height:1.55;color:#666}
+.storage{border:1px solid #1a1a1a;border-radius:9px;background:#070707;overflow:hidden}
+.storage-top{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #171717}
+.storage-top h3{font-size:12px;margin:0}
+.storage-top span{font-size:9px;color:#666}
+.controls{display:grid;grid-template-columns:1.5fr .7fr auto;gap:8px;padding:14px;border-bottom:1px solid #151515}
+.control{height:38px;border:1px solid #1f1f1f;background:#090909;color:#ddd;border-radius:6px;padding:0 11px;outline:none;font-size:10px}
+.control:focus{border-color:#4c4c4c}
+.copyall{height:38px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid #151515}
+.tab{font-size:9px;border:1px solid #1d1d1d;border-radius:5px;padding:7px 9px;background:#080808;color:#777;cursor:pointer;transition:.18s}
+.tab:hover,.tab.active{color:#fff;border-color:#4a4a4a;background:#101010;transform:translateY(-1px)}
+.resultbar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-size:9px;color:#626262}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;padding:12px 14px 18px}
+.script{border:1px solid #181818;border-radius:7px;background:#080808;padding:13px;min-width:0;transition:.2s}
+.script:hover{border-color:#333;transform:translateY(-2px)}
+.script-top{display:flex;justify-content:space-between;gap:12px}
+.script h4{font-size:10px;margin:0 0 4px}
+.meta{font-size:8px;color:#555}
+.badge{font-size:8px;color:#888;border:1px solid #202020;border-radius:4px;padding:4px 6px;height:max-content;white-space:nowrap}
+.tier-badge{font-size:7px;font-weight:800;letter-spacing:.12em;border:1px solid #2b2b2b;border-radius:4px;padding:4px 6px;height:max-content;white-space:nowrap}
+.tier-badge.free{color:#a9d9a9;border-color:#284028;background:#0b130b}
+.tier-badge.paid{color:#e9cf8b;border-color:#4a3b17;background:#171208}
+.tier-badge.dev{color:#c7b4ff;border-color:#3c2e67;background:#110c1f}
+.script.locked{opacity:.7;border-style:dashed}
+.script.locked .code{filter:blur(2px);user-select:none}
+.script.catalog-only .code{color:#777;font-style:italic}
+.access-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:10px 0 2px}
+.access-pill{font-size:8px;color:#777;border:1px solid #1e1e1e;border-radius:999px;padding:6px 9px;background:#090909}
+.access-pill strong{color:#ddd}
+.smallbtn[disabled]{opacity:.35;cursor:not-allowed;transform:none!important}
+.code{margin-top:11px;padding:10px;border:1px solid #171717;border-radius:5px;background:#050505;color:#969696;font:8.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actions{display:flex;justify-content:flex-end;gap:6px;margin-top:9px}
+.smallbtn{font-size:8px;border:1px solid #222;background:#0b0b0b;color:#aaa;border-radius:5px;padding:6px 9px;cursor:pointer;transition:.18s}
+.smallbtn:hover{color:#fff;border-color:#555;transform:translateY(-2px)}
+.smallbtn.saved{color:#fff;background:#151515}
+.about{text-align:center;color:#666;font-size:10px;line-height:1.7;max-width:650px;margin:0 auto}
+.footer{border-top:1px solid #111;color:#4f4f4f;font-size:9px;padding:24px 7vw;display:flex;justify-content:space-between}
+.toast{position:fixed;right:20px;bottom:20px;background:#f0f0f0;color:#070707;border-radius:6px;padding:10px 13px;font-size:10px;opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s;z-index:100}
+.toast.show{opacity:1;transform:translateY(0)}
+.floaters{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1;opacity:.16}
+.pix{position:absolute;width:12px;height:12px;border:1px solid #777;animation:drift linear infinite}
+.pix:after{content:"";position:absolute;inset:3px;background:#777}
+@keyframes drift{from{transform:translate3d(-60px,0,0) rotate(0)}to{transform:translate3d(calc(100vw + 80px),-80px,0) rotate(360deg)}}
+.reveal{opacity:1;transform:none;transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:850px){
+  .nav{display:none}
+  .overview{grid-template-columns:1fr}
+  .main-card{border-right:0;border-bottom:1px solid var(--line)}
+  .split-section,.feature-row,.grid{grid-template-columns:1fr}
+  .split-card+.split-card{border-left:0;border-top:1px solid var(--line)}
+  .controls{grid-template-columns:1fr}
+  .editor-body{grid-template-columns:100px 1fr}
+}
+
+.nav{gap:18px}
+.nav-actions{display:flex;align-items:center;gap:7px}
+.nav-btn{border:1px solid #252525;background:#090909;color:#aaa;padding:7px 11px;border-radius:6px;font-size:10px;cursor:pointer;transition:transform .18s cubic-bezier(.2,.9,.2,1.25),border-color .18s,color .18s,background .18s}
+.nav-btn:hover{color:#fff;border-color:#555;background:#111;transform:translateY(-2px)}
+.nav-btn.signup{background:#eee;color:#080808;border-color:#eee}
+.nav-btn.signup:hover{background:#fff;color:#000}
+.account-chip{display:none;align-items:center;gap:7px;border:1px solid #242424;background:#090909;color:#ddd;padding:7px 10px;border-radius:6px;font-size:10px;cursor:pointer}
+.account-dot{width:6px;height:6px;border-radius:50%;background:#a8ff9d;box-shadow:0 0 8px rgba(168,255,157,.55)}
+.account-menu{position:fixed;right:7vw;top:51px;z-index:90;width:190px;border:1px solid #242424;background:#080808;border-radius:7px;padding:7px;box-shadow:0 18px 60px rgba(0,0,0,.55);display:none}
+.account-menu.show{display:block;animation:popIn .16s ease}
+.account-menu .who{padding:9px;color:#ddd;font-size:10px;border-bottom:1px solid #171717;margin-bottom:6px}
+.account-menu button{width:100%;text-align:left;border:0;background:transparent;color:#888;padding:9px;border-radius:5px;font-size:9px;cursor:pointer}
+.account-menu button:hover{background:#101010;color:#fff}
+.executor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.executor-card{min-height:168px;border:1px solid #191919;border-radius:7px;background:#080808;padding:18px;position:relative;overflow:hidden;transition:.2s}
+.executor-card:hover{border-color:#3b3b3b;transform:translateY(-4px)}
+.executor-card:before{content:"";position:absolute;width:100px;height:100px;border:1px solid #202020;border-radius:50%;right:-40px;top:-45px}
+.executor-card .tag{font-size:8px;letter-spacing:1.2px;color:#555;text-transform:uppercase}
+.executor-card h3{font-size:12px;margin:11px 0 7px}
+.executor-card p{font-size:9px;line-height:1.65;color:#666;margin:0}
+.executor-card .status{display:inline-flex;align-items:center;gap:5px;margin-top:14px;font-size:8px;color:#8f8f8f}
+.executor-card .status:before{content:"";width:5px;height:5px;border-radius:50%;background:#9cff92}
+.executor-note{margin-top:12px;text-align:center;color:#555;font-size:9px}
+.modal-backdrop{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.72);backdrop-filter:blur(9px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-backdrop.show{display:flex;animation:fadeIn .16s ease}
+.auth-modal{width:min(390px,100%);border:1px solid #252525;border-radius:9px;background:#080808;box-shadow:0 30px 100px rgba(0,0,0,.75);overflow:hidden;animation:modalIn .2s cubic-bezier(.2,.9,.2,1.15)}
+.auth-head{display:flex;justify-content:space-between;align-items:center;padding:17px 18px;border-bottom:1px solid #171717}
+.auth-head h3{font-size:12px;margin:0}
+.close-modal{border:1px solid #202020;background:#0b0b0b;color:#888;width:28px;height:28px;border-radius:5px;cursor:pointer}
+.close-modal:hover{color:#fff;border-color:#555}
+.auth-body{padding:18px}
+.auth-copy{font-size:9px;color:#666;line-height:1.6;margin:0 0 16px}
+.field{display:grid;gap:6px;margin-bottom:11px}
+.field label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:#555}
+.field input{width:100%;height:39px;border:1px solid #202020;background:#050505;color:#eee;border-radius:6px;outline:none;padding:0 11px;font-size:10px}
+.field input:focus{border-color:#555}
+.auth-error{min-height:15px;font-size:8px;color:#ff8585;margin:2px 0 8px}
+.auth-submit{width:100%;height:40px}
+.auth-switch{text-align:center;font-size:8px;color:#5f5f5f;margin-top:12px}
+.auth-switch button{border:0;background:transparent;color:#aaa;font-size:8px;cursor:pointer;text-decoration:underline}
+.local-badge{display:inline-block;margin-top:11px;border:1px solid #1d1d1d;border-radius:4px;padding:5px 7px;font-size:7px;color:#555}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(-5px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@media(max-width:1000px){.nav{gap:12px}.nav-btn{padding:7px 8px}}
+@media(max-width:850px){.nav-actions .nav-btn.exec-nav{display:none}.executor-grid{grid-template-columns:1fr}}
+
+
+.executor-toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border:1px solid #181818;border-radius:7px;background:#080808;
+  padding:11px 13px;margin-bottom:10px;color:#777;font-size:9px
+}
+.executor-live-dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#9cff92;box-shadow:0 0 10px rgba(156,255,146,.55);margin-right:7px
+}
+.weao-main-link{display:inline-block;text-decoration:none}
+.executor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.executor-card{
+  min-height:190px;border:1px solid #191919;border-radius:7px;background:#080808;
+  padding:17px;position:relative;overflow:hidden;transition:.2s
+}
+.executor-card:hover{border-color:#3b3b3b;transform:translateY(-4px)}
+.executor-card:before{
+  content:"";position:absolute;width:95px;height:95px;border:1px solid #202020;
+  border-radius:50%;right:-38px;top:-42px
+}
+.executor-card .tag{
+  font-size:8px;letter-spacing:1.1px;color:#555;text-transform:uppercase;
+  display:flex;align-items:center;gap:5px
+}
+.executor-card h3{font-size:12px;margin:10px 0 9px;padding-right:30px}
+.executor-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.executor-meta div{
+  border:1px solid #171717;border-radius:5px;background:#060606;padding:8px
+}
+.executor-meta small{
+  display:block;font-size:7px;color:#4f4f4f;text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:4px
+}
+.executor-meta b{font-size:9px;color:#b9b9b9;font-weight:600}
+.executor-flags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.executor-flag{
+  border:1px solid #1d1d1d;border-radius:4px;padding:5px 6px;
+  font-size:7px;color:#6f6f6f;background:#0a0a0a
+}
+.executor-flag.good{color:#9ddd97;border-color:#223120}
+.executor-flag.bad{color:#db8c8c;border-color:#352020}
+.executor-note{margin-top:12px;text-align:center;color:#555;font-size:9px}
+.executor-cta{
+  margin-top:28px;border:1px solid #1c1c1c;border-radius:8px;background:#080808;
+  padding:22px;display:flex;align-items:center;justify-content:space-between;gap:20px
+}
+.executor-cta h3{font-size:16px;margin:6px 0}
+.executor-cta p{font-size:9px;color:#666;margin:0}
+.dev-badge{
+  margin-left:6px;border:1px solid #343434;border-radius:4px;padding:3px 5px;
+  font-size:7px;color:#aaa;vertical-align:middle
+}
+@media(max-width:900px){
+  .executor-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:650px){
+  .executor-grid{grid-template-columns:1fr}
+  .executor-toolbar,.executor-cta{align-items:flex-start;flex-direction:column}
+}
+
+/* DETAIL EXPANSION */
+.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.detail-card{border:1px solid #1d1d1d;background:#090909;border-radius:8px;padding:18px;min-height:128px}
+.detail-card .num{font-size:9px;color:#5e5e5e;margin-bottom:10px}
+.detail-card h3{font-size:13px;margin:0 0 8px}.detail-card p{font-size:9px;color:#6c6c6c;line-height:1.7;margin:0}
+.info-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.info-pill{border:1px solid #1c1c1c;border-radius:7px;padding:14px;background:#070707}.info-pill b{display:block;font-size:10px;margin-bottom:5px}.info-pill span{font-size:8px;color:#666}
+.faq{margin-top:18px;border:1px solid #1b1b1b;border-radius:8px;overflow:hidden;background:#080808}.faq details{padding:14px 16px;border-top:1px solid #171717}.faq details:first-child{border-top:0}.faq summary{cursor:pointer;font-size:10px;font-weight:700}.faq p{font-size:9px;color:#666;line-height:1.65;margin:10px 0 0}
+.executor-legend{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.legend-chip{border:1px solid #202020;border-radius:999px;padding:7px 10px;font-size:8px;color:#777;background:#080808}
+@media(max-width:900px){.detail-grid{grid-template-columns:1fr 1fr}.info-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.detail-grid,.info-strip{grid-template-columns:1fr}}
+
+
+/* FEATURE PACK */
+:root{--panel:#080808;--panel2:#0b0b0b;--line:#1d1d1d;--muted:#737373;--text:#f2f2f2}
+body.light-theme{background:#efefef;color:#111}
+body.light-theme .topbar,body.light-theme .storage,body.light-theme .detail-card,body.light-theme .dash-card,body.light-theme .feed-card,body.light-theme .profile-card,body.light-theme .history-card,body.light-theme .announcement,body.light-theme .changelog-card,body.light-theme .script,body.light-theme .auth-modal{background:#fff;color:#111;border-color:#d2d2d2}
+body.light-theme .code,body.light-theme .control,body.light-theme .view-btn,body.light-theme .filter-select{background:#f5f5f5;color:#111;border-color:#ccc}
+body.light-theme .section-head p,body.light-theme .dash-card span,body.light-theme .feed-card p,body.light-theme .profile-meta,body.light-theme .history-meta{color:#666}
+.feature-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.feature-toolbar .smallbtn{min-width:78px}
+.dashboard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.dash-card{border:1px solid #1c1c1c;border-radius:8px;padding:18px;background:#080808}.dash-card .dash-value{font-size:26px;font-weight:800;letter-spacing:-.04em}.dash-card span{display:block;margin-top:8px;font-size:8px;color:#696969;text-transform:uppercase;letter-spacing:.14em}
+.feed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.feed-card{border:1px solid #1c1c1c;border-radius:8px;background:#080808;padding:15px;cursor:pointer;transition:.18s transform,.18s border-color}.feed-card:hover{transform:translateY(-2px);border-color:#383838}.feed-card h4{margin:0 0 7px;font-size:11px}.feed-card p{margin:0;color:#686868;font-size:8px;line-height:1.6}.feed-card .feed-meta{display:flex;justify-content:space-between;gap:8px;margin-top:12px;font-size:7px;color:#777}
+.storage-filterbar{display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;margin-top:10px}.filter-select,.view-btn{height:38px;border:1px solid #202020;background:#090909;color:#aaa;border-radius:6px;padding:0 10px;font:inherit;font-size:9px}.view-btn{cursor:pointer}.view-btn.active{border-color:#5f5f5f;color:#fff}
+.grid.compact{grid-template-columns:repeat(4,1fr);gap:8px}.grid.compact .script{padding:11px}.grid.compact .code{display:none}.grid.compact .meta{display:none}.grid.list-view{grid-template-columns:1fr}.grid.list-view .script{display:grid;grid-template-columns:minmax(180px,1fr) minmax(260px,2fr) auto;align-items:center;gap:12px}.grid.list-view .script-top{margin:0}.grid.list-view .actions{justify-content:flex-end;margin:0}.grid.list-view .code{margin:0}
+.script.locked{position:relative;overflow:hidden}.script.locked:after{content:'LOCKED';position:absolute;inset:auto -26px 20px auto;transform:rotate(-38deg);padding:5px 34px;background:#19140a;border:1px solid #5b4619;color:#f2d281;font-size:7px;letter-spacing:.18em;animation:lockGlow 2.3s ease-in-out infinite}.script.locked:hover{animation:lockedShake .24s linear 1}@keyframes lockGlow{0%,100%{opacity:.55}50%{opacity:1;box-shadow:0 0 18px #644f1f55}}@keyframes lockedShake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+.script-extra{display:flex;gap:6px;margin-top:8px}.details-btn{flex:1}.creator-line{font-size:7px;color:#5e5e5e;margin-top:6px}
+.modal-backdrop.feature-modal{z-index:120}.detail-modal{width:min(620px,92vw);max-height:82vh;overflow:auto;border:1px solid #292929;border-radius:10px;background:#080808;padding:0}.detail-body{padding:20px}.detail-body h3{font-size:18px;margin:0 0 5px}.detail-body .detail-code{margin-top:15px;border:1px solid #1c1c1c;background:#050505;border-radius:7px;padding:13px;font-family:monospace;font-size:9px;line-height:1.6;word-break:break-all}.detail-kv{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:15px}.detail-kv div{border:1px solid #191919;border-radius:6px;padding:10px}.detail-kv b{display:block;font-size:7px;color:#666;margin-bottom:5px}.detail-kv span{font-size:10px}
+.profile-grid{display:grid;grid-template-columns:1.2fr 2fr;gap:14px}.profile-card,.history-card,.announcement,.changelog-card{border:1px solid #1c1c1c;border-radius:8px;background:#080808;padding:18px}.profile-name{font-size:22px;font-weight:800}.profile-meta{color:#666;font-size:9px;margin-top:5px}.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.profile-stat{border:1px solid #1c1c1c;border-radius:6px;padding:10px}.profile-stat b{display:block;font-size:15px}.profile-stat span{font-size:7px;color:#666}.history-list{display:grid;gap:8px;margin-top:12px}.history-row{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #151515;padding-top:9px}.history-row:first-child{border-top:0;padding-top:0}.history-name{font-size:9px}.history-meta{font-size:7px;color:#666}.announcement-wrap,.changelog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.announcement strong,.changelog-card strong{font-size:10px}.announcement p,.changelog-card p{font-size:8px;color:#666;line-height:1.65;margin:8px 0 0}.announce-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#8dff93;margin-right:7px;box-shadow:0 0 10px #8dff9366}
+.empty-note{border:1px dashed #252525;border-radius:8px;padding:18px;color:#666;font-size:9px;text-align:center}
+@media(max-width:900px){.dashboard-grid{grid-template-columns:repeat(2,1fr)}.feed-grid{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr}.storage-filterbar{grid-template-columns:1fr 1fr}.grid.compact{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.dashboard-grid,.feed-grid,.announcement-wrap,.changelog-grid,.storage-filterbar{grid-template-columns:1fr}.grid.compact{grid-template-columns:1fr}.grid.list-view .script{display:block}.grid.list-view .code{margin:10px 0}.grid.list-view .actions{margin-top:10px}.detail-kv{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div class="floaters" id="floaters"></div>
+
+<header class="topbar">
+  <div class="brand"><a href="flames.html" class="secret-logo" aria-label="Open Nebula Flames secret entrance" title="" ><span class="brand-mark"></span></a><a href="#home">Nebula.Now</a></div>
+  <nav class="nav">
+    <a href="#home">Home</a>
+    <a href="#storage">Storage</a>
+    <a href="#categories">Categories</a>
+    <a href="#saved">Saved</a>
+    <a href="#discover">Discover</a>
+    <a href="#profile">Profile</a>
+    <a href="#how-it-works">Guide</a>
+    <a href="#executors">Executors</a>
+    <a href="#about">About</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="nav-btn" id="downloadBtn" title="Download the Windows app (.bat)">⬇ Download</button>
+    <button class="nav-btn" id="themeToggle" title="Toggle theme">☾ Theme</button>
+    <button class="nav-btn exec-nav" id="executorsNavBtn">Executors</button>
+    <button class="nav-btn" id="loginBtn">Log In</button>
+    <button class="nav-btn signup" id="signupBtn">Sign Up</button>
+    <button class="account-chip" id="accountChip"><span class="account-dot"></span><span id="accountName">Account</span></button>
+  </div>
+</header>
+<div class="account-menu" id="accountMenu">
+  <div class="who" id="accountMenuName">Signed in</div>
+  <div class="who" id="accountTierName">Tier: FREE</div>
+  <button id="goStorageBtn">Open Storage</button>
+  <button id="tierManagerBtn" style="display:none">Manage Paid Access</button>
+  <button id="logoutBtn">Log Out</button>
+</div>
+
+<main id="home">
+<section class="hero reveal">
+  <div class="eyebrow">REQUIRE SCRIPT STORAGE</div>
+  <h1>Experience the Best<br>Require Storage</h1>
+  <p>Nebula.Now is a clean library for storing, sorting, searching and copying require scripts through a streamlined interface.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="#storage">Browse Storage</a>
+    <button class="btn" id="randomBtn">Random Script</button>
+  </div>
+</section>
+
+<section class="section reveal" id="dashboard">
+  <div class="section-head"><div class="kicker">Dashboard</div><h2>Library at a glance</h2><p>Live counts from the current Nebula.Now catalog and your browser activity.</p></div>
+  <div class="dashboard-grid">
+    <div class="dash-card"><div class="dash-value" id="dashFree">0</div><span>Free entries</span></div>
+    <div class="dash-card"><div class="dash-value" id="dashPaid">0</div><span>Paid entries</span></div>
+    <div class="dash-card"><div class="dash-value" id="dashDev">0</div><span>Dev entries</span></div>
+    <div class="dash-card"><div class="dash-value" id="dashSaved">0</div><span>Your favorites</span></div>
+  </div>
+</section>
+
+<div class="shell reveal">
+  <div class="overview">
+    <section class="main-card">
+      <h2 class="card-title">Require Library</h2>
+      <p class="card-sub">Store scripts cleanly with instant search and username swapping.</p>
+      <div class="editor">
+        <div class="editor-head">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="editor-toolbar"><span class="mini">Library</span><span class="mini">Copy</span></div>
+        </div>
+        <div class="editor-body">
+          <aside class="sidebar">
+            <div class="side-label">Storage</div>
+            <div class="side-item active">Combat</div>
+            <div class="side-item">Animations</div>
+            <div class="side-item">GUIs</div>
+            <div class="side-item">Trusted</div>
+          </aside>
+          <div class="codepane">
+<pre><span class="hi">Fatal Error Sans</span>
+require(6112085780).FatalErrorSans("YourUsername")
+
+<span class="hi">Ink Sans</span>
+require(5420931037).Ink("YourUsername")
+
+<span class="hi">Cross / XXX</span>
+require(5626207311).XXX("YourUsername")
+
+<span class="hi">Fish Chat</span>
+require(77886688623397)(true, true, false)</pre>
+            <div class="cursor-line"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <aside class="right-stats">
+      <div class="statbox">
+        <div class="icon">⌕</div>
+        <h3>Fast Search</h3>
+        <p>Find names, module IDs, categories and methods instantly.</p>
+      </div>
+      <div class="statbox">
+        <div class="icon">↻</div>
+        <h3>Username Swap</h3>
+        <p>Type one username and supported scripts update before copying.</p>
+        <div class="progress"><span></span></div>
+      </div>
+      <div class="statbox">
+        <div class="icon">★</div>
+        <h3>Saved Locally</h3>
+        <p>Your saved list stays in this browser using local storage.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="split-section">
+    <div class="split-card">
+      <h3>100% Static & Simple</h3>
+      <p>No account or backend is required. Everything runs directly in the browser.</p>
+      <div class="list-mini">
+        <div><span>Unique scripts</span><b id="miniCount">0</b></div>
+        <div><span>Categories</span><b>4</b></div>
+      </div>
+    </div>
+    <div class="split-card">
+      <h3>Require Storage</h3>
+      <p>Built around the require scripts you supplied, with duplicates removed.</p>
+      <div class="globe"></div>
+    </div>
+  </div>
+</div>
+
+<section class="section reveal" id="categories">
+  <div class="section-head">
+    <div class="kicker">Categories</div>
+    <h2>Everything organized</h2>
+    <p>Explore collections organized by category.</p>
+  </div>
+  <div class="feature-row">
+    <div class="feature"><b>Combat</b><span>Character and battle-oriented require modules.</span></div>
+    <div class="feature"><b>Animations</b><span>Animation and general load-style modules.</span></div>
+    <div class="feature"><b>GUIs + Trusted</b><span>Interface modules and your Nebula trusted GUI section.</span></div>
+  </div>
+</section>
+
+<section class="section reveal" id="storage">
+  <div class="section-head">
+    <div class="kicker">Storage</div>
+    <h2>Require Script Library</h2>
+    <p>Search, filter, save and copy without leaving the page.</p>
+  </div>
+
+  <div class="storage">
+    <div class="storage-top">
+      <div><h3>Nebula.Now Storage</h3><span id="statusText">Ready</span></div>
+      <span id="totalText"></span>
+    </div>
+    <div class="controls">
+      <input class="control" id="searchInput" placeholder="Search scripts, creators, IDs, categories...">
+      <input class="control" id="usernameInput" value="YourUsername" aria-label="Username">
+      <button class="btn copyall" id="copyVisible">Copy Visible</button>
+    </div>
+    <div class="storage-filterbar">
+      <select class="filter-select" id="tierFilter"><option value="all">All tiers</option><option value="free">Free</option><option value="paid">Paid</option><option value="dev">Dev</option></select>
+      <select class="filter-select" id="creatorFilter"><option value="all">All creators</option></select>
+      <button class="view-btn active" id="gridViewBtn">Grid</button>
+      <button class="view-btn" id="compactViewBtn">Compact / List</button>
+    </div>
+    <div class="access-row">
+      <span class="access-pill">Current access: <strong id="currentAccessLabel">FREE</strong></span>
+      <span class="access-pill">Free = basics</span>
+      <span class="access-pill">Paid = premium catalog</span>
+      <span class="access-pill">Dev = everything</span>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="resultbar">
+      <span id="resultText"></span>
+      <button class="smallbtn" id="savedToggle">★ Saved</button>
+    </div>
+    <div class="grid" id="scriptGrid"></div>
+  </div>
+</section>
+
+<section class="section reveal" id="saved">
+  <div class="section-head">
+    <div class="kicker">Saved</div>
+    <h2>Your local shortlist</h2>
+    <p>Star scripts in Storage, then use Saved to filter them.</p>
+  </div>
+  <div class="about">Saved entries are stored only in your browser. Clearing browser storage removes the saved list. Free users can browse basics, Paid users unlock premium catalog entries, and Dev has complete access.</div>
+
+  <div class="detail-grid">
+    <div class="detail-card"><div class="num">01 / SAVE</div><h3>Build a shortlist</h3><p>Use the star button on any card to keep frequently used entries together. Saved items can be filtered instantly without changing the main library.</p></div>
+    <div class="detail-card"><div class="num">02 / SEARCH</div><h3>Find by more than a name</h3><p>Search can match script names, module IDs and category labels, making a larger library easier to scan without scrolling through every card.</p></div>
+    <div class="detail-card"><div class="num">03 / USERNAME</div><h3>One username field</h3><p>Where a stored snippet supports a username placeholder, the page swaps in the username from the Storage toolbar before you copy it.</p></div>
+  </div>
+</section>
+
+<section class="section reveal" id="how-it-works">
+  <div class="section-head">
+    <div class="kicker">How It Works</div>
+    <h2>Built for fast browsing</h2>
+    <p>Nebula.Now keeps the page simple: browse, filter, inspect, save and copy.</p>
+  </div>
+  <div class="info-strip">
+    <div class="info-pill"><b>1. Browse</b><span>Open Storage and choose a category.</span></div>
+    <div class="info-pill"><b>2. Filter</b><span>Search names, IDs or category keywords.</span></div>
+    <div class="info-pill"><b>3. Personalize</b><span>Set your username once for supported snippets.</span></div>
+    <div class="info-pill"><b>4. Save & Copy</b><span>Star useful entries and copy only what you need.</span></div>
+  </div>
+</section>
+
+<section class="section reveal" id="discover">
+  <div class="section-head"><div class="kicker">Discover</div><h2>Recently Added & Trending</h2><p>Recently added entries come from the newest catalog items. Trending is based on copy activity saved in this browser.</p></div>
+  <div class="section-head" style="margin-top:20px"><div class="kicker">Recently Added</div></div>
+  <div class="feed-grid" id="recentGrid"></div>
+  <div class="section-head" style="margin-top:28px"><div class="kicker">Trending</div></div>
+  <div class="feed-grid" id="trendingGrid"></div>
+  <div class="section-head" style="margin-top:28px"><div class="kicker">Favorites</div></div>
+  <div class="feed-grid" id="favoritesGrid"></div>
+</section>
+
+<section class="section reveal" id="announcements">
+  <div class="section-head"><div class="kicker">Announcements</div><h2>Nebula.Now notices</h2></div>
+  <div class="announcement-wrap">
+    <div class="announcement"><strong><span class="announce-dot"></span>Tier system live</strong><p>Free, Paid and Dev access now appear throughout Storage. The N account keeps full Dev access.</p></div>
+    <div class="announcement"><strong><span class="announce-dot"></span>Feature Pack</strong><p>Dashboard, discovery feeds, details, profile, history, themes and alternate views are now included in this build.</p></div>
+  </div>
+</section>
+
+<section class="section reveal" id="profile">
+  <div class="section-head"><div class="kicker">Account</div><h2>Profile & activity</h2><p>Your local profile, access tier, favorites and copy history.</p></div>
+  <div class="profile-grid">
+    <div class="profile-card"><div class="profile-name" id="profileName">Guest</div><div class="profile-meta" id="profileTier">FREE access</div><div class="profile-stats"><div class="profile-stat"><b id="profileFavCount">0</b><span>Favorites</span></div><div class="profile-stat"><b id="profileCopyCount">0</b><span>Copies</span></div><div class="profile-stat"><b id="profileUnlocked">0</b><span>Unlocked</span></div></div></div>
+    <div class="history-card"><strong>Copy History</strong><div class="history-list" id="copyHistoryList"></div><button class="smallbtn" id="clearHistoryBtn" style="margin-top:12px">Clear History</button></div>
+  </div>
+</section>
+
+<section class="section reveal" id="changelog">
+  <div class="section-head"><div class="kicker">Changelog</div><h2>What changed</h2></div>
+  <div class="changelog-grid">
+    <div class="changelog-card"><strong>v3.0 · Feature Pack</strong><p>Added dashboard, tier/creator filters, discovery feeds, details modal, profile, copy history, theme control, compact and list views.</p></div>
+    <div class="changelog-card"><strong>v2.0 · Tiers</strong><p>Added Free, Paid and Dev access, N Dev account support and premium catalog locking.</p></div>
+    <div class="changelog-card"><strong>v1.5 · Executors</strong><p>Added compatibility/status cards and local account controls.</p></div>
+    <div class="changelog-card"><strong>v1.0 · Storage</strong><p>Initial searchable require library with username replacement and saved entries.</p></div>
+  </div>
+</section>
+
+<section class="section reveal" id="executors">
+  <div class="section-head">
+    <div class="kicker">Executors</div>
+    <h2>Live compatibility status</h2>
+    <p>Platform, sUNC, UNC, update and detection data are loaded from the public WEAO status feed when available.</p>
+  </div>
+
+  <div class="executor-toolbar">
+    <div>
+      <span class="executor-live-dot"></span>
+      <span id="weaoStatusText">Loading WEAO status…</span>
+    </div>
+    <a class="smallbtn weao-main-link" href="https://weao.xyz/?type=executor" target="_blank" rel="noopener noreferrer">Open WEAO Tracker ↗</a>
+  </div>
+
+  <div class="executor-legend">
+    <span class="legend-chip">Platform = supported operating system/device</span>
+    <span class="legend-chip">UNC = reported compatibility coverage</span>
+    <span class="legend-chip">sUNC = stricter compatibility score where supplied</span>
+    <span class="legend-chip">Update = current tracker status</span>
+    <span class="legend-chip">Detection = tracker-reported detection state</span>
+  </div>
+
+  <div class="executor-grid" id="executorGrid"></div>
+
+  <div class="executor-note">
+    Compatibility data only. Direct exploit download and purchase links are not mirrored here.
+  </div>
+
+  <div class="executor-cta">
+    <div>
+      <div class="kicker">NEBULA.NOW ACCOUNT</div>
+      <h3>Sign Up for Executors</h3>
+      <p>Create a local profile to keep your preferred username ready in this browser.</p>
+    </div>
+    <button class="btn primary" id="executorSignupBtn">Sign Up</button>
+  </div>
+</section>
+
+<section class="section reveal" id="about">
+  <div class="section-head">
+    <div class="kicker">About</div>
+    <h2>Nebula.Now</h2>
+  </div>
+  <div class="about">A require-script organizer only. It stores and copies text; it does not run Roblox modules. Third-party modules can be changed, deleted or made private by their owners, so verify modules before using them in a place you control.</div>
+
+  <div class="faq">
+    <details><summary>Does Nebula.Now execute scripts?</summary><p>No. This page is a front-end organizer and copier. It does not itself execute Roblox modules.</p></details>
+    <details><summary>Where are accounts and saved items stored?</summary><p>The current build stores account/session information and saved items in the local browser. They are not synced between devices.</p></details>
+    <details><summary>Why can an item stop working?</summary><p>A third-party module can be edited, removed, restricted or made private by its owner. The entry in this library can remain visible even when the external module changes.</p></details>
+    <details><summary>What does the Executors section show?</summary><p>It presents compatibility/status information from the public WEAO tracker when the feed is available. The page does not mirror direct exploit download or purchase links.</p></details>
+  </div>
+</section>
+</main>
+
+<footer class="footer"><span>Nebula.Now</span><span>Sign Up for Executors</span></footer>
+<div class="toast" id="toast">Copied</div>
+
+<div class="modal-backdrop feature-modal" id="detailBackdrop">
+  <div class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="auth-head"><h3 id="detailTitle">Script Details</h3><button class="close-modal" id="closeDetails" aria-label="Close">×</button></div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="authBackdrop">
+  <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth-head"><h3 id="authTitle">Log In</h3><button class="close-modal" id="closeAuth" aria-label="Close">×</button></div>
+    <form class="auth-body" id="authForm">
+      <p class="auth-copy" id="authCopy">Log in to your local Nebula.Now profile on this browser.</p>
+      <div class="field"><label for="authUsername">Roblox username</label><input id="authUsername" autocomplete="username" maxlength="32" required placeholder="YourUsername"></div>
+      <div class="field"><label for="authPassword">Password</label><input id="authPassword" type="password" autocomplete="current-password" minlength="4" required placeholder="••••••••"></div>
+      <div class="field" id="confirmField" style="display:none"><label for="authConfirm">Confirm password</label><input id="authConfirm" type="password" autocomplete="new-password" minlength="4" placeholder="••••••••"></div>
+      <div class="auth-error" id="authError"></div>
+      <button class="btn primary auth-submit" id="authSubmit" type="submit">Log In</button>
+      <div class="auth-switch"><span id="authSwitchText">Need an account?</span> <button type="button" id="authSwitch">Sign Up</button></div>
+      <span class="local-badge">LOCAL BROWSER ACCOUNT</span>
+    </form>
+  </div>
+</div>
+
+
+<script>
+const scripts = [{"name": "FRISK", "category": "Combat", "id": "5652075283", "template": "require(5652075283).FRISK(\"{user}\")"}, {"name": "Betty", "category": "Combat", "id": "5150273023", "template": "require(5150273023).betty(\"{user}\")"}, {"name": "Module 5705420692", "category": "Animations", "id": "5705420692", "template": "require(5705420692).load(\"{user}\")"}, {"name": "Underman", "category": "Combat", "id": "5628525967", "template": "require(5628525967).underman(\"{user}\")"}, {"name": "Soul Variant A", "category": "Animations", "id": "5930631949", "template": "require(5930631949).Soul(\"{user}\")"}, {"name": "Soul Variant B", "category": "Animations", "id": "5930628558", "template": "require(5930628558).Soul(\"{user}\")"}, {"name": "Soul Variant C", "category": "Animations", "id": "5930854483", "template": "require(5930854483).Soul(\"{user}\")"}, {"name": "Soul Variant D", "category": "Animations", "id": "5930003592", "template": "require(5930003592).Soul(\"{user}\")"}, {"name": "XChara", "category": "Combat", "id": "5160009702", "template": "require(5160009702).xchara(\"{user}\")"}, {"name": "Module 5689406302", "category": "Animations", "id": "5689406302", "template": "require(5689406302).load(\"{user}\")"}, {"name": "Omega Flower", "category": "Combat", "id": "5621190626", "template": "require(5621190626).OmegaFlower(\"{user}\")"}, {"name": "Module 4106669917", "category": "Combat", "id": "4106669917", "template": "require(4106669917).load(\"{user}\")"}, {"name": "Fatal Error Sans", "category": "Combat", "id": "6112085780", "template": "require(6112085780).FatalErrorSans(\"{user}\")"}, {"name": "Ink Sans", "category": "Combat", "id": "5420931037", "template": "require(5420931037).Ink(\"{user}\")"}, {"name": "Cross / XXX", "category": "Combat", "id": "5626207311", "template": "require(5626207311).XXX(\"{user}\")"}, {"name": "Underfell", "category": "Combat", "id": "5157795705", "template": "require(5157795705).fell(\"{user}\")"}, {"name": "X Sans", "category": "Combat", "id": "5159575864", "template": "require(5159575864).xsans(\"{user}\")"}, {"name": "Nightmare", "category": "Combat", "id": "5705101121", "template": "require(5705101121).nightmare(\"{user}\")"}, {"name": "Error Sans", "category": "Combat", "id": "5705141291", "template": "require(5705141291).error(\"{user}\")"}, {"name": "Classic / Load", "category": "Combat", "id": "5830034183", "template": "require(5830034183).load(\"{user}\")"}, {"name": "Module 5931148647", "category": "Animations", "id": "5931148647", "template": "require(5931148647).load(\"{user}\")"}, {"name": "Module 6778087429", "category": "Animations", "id": "6778087429", "template": "require(6778087429).load(\"{user}\")"}, {"name": "Module 5931119929", "category": "Animations", "id": "5931119929", "template": "require(5931119929).load(\"{user}\")"}, {"name": "Module 5845670816", "category": "Animations", "id": "5845670816", "template": "require(5845670816).load(\"{user}\")"}, {"name": "Dark", "category": "Combat", "id": "5593377656", "template": "require(5593377656).Dark(\"{user}\")"}, {"name": "Module 5007799658", "category": "Animations", "id": "5007799658", "template": "require(5007799658).load(\"{user}\")"}, {"name": "Vbucks GUI", "category": "GUIs", "id": "5520080089", "template": "require(5520080089).vbucks(\"{user}\")"}, {"name": "Module 5690251146", "category": "Animations", "id": "5690251146", "template": "require(5690251146).load(\"{user}\")"}, {"name": "Underman Variant", "category": "Combat", "id": "5626154036", "template": "require(5626154036).underman(\"{user}\")"}, {"name": "UNDYNE", "category": "Combat", "id": "5705614139", "template": "require(5705614139).UNDYNE(\"{user}\")"}, {"name": "OWO GUI", "category": "GUIs", "id": "5457838278", "template": "require(5457838278).owo(\"{user}\")"}, {"name": "GP2", "category": "Combat", "id": "5626309750", "template": "require(5626309750).gp2(\"{user}\")"}, {"name": "Dark Darker Yet Darker", "category": "Combat", "id": "5625740893", "template": "require(5625740893).DarkDarkerYetDarker(\"{user}\")"}, {"name": "Fish Chat", "category": "Nebula Trusted GUIs", "id": "77886688623397", "template": "require(77886688623397)(true, true, false)"}];
+
+// Nebula access tiers. Existing approved entries are split across Free/Paid/Dev.
+const FREE_NAMES = new Set(["FRISK","Betty","Underman","Ink Sans","Underfell","Fish Chat","OWO GUI","Vbucks GUI"]);
+const PAID_NAMES = new Set(["Fatal Error Sans","Cross / XXX","X Sans","Nightmare","Error Sans","Omega Flower","UNDYNE","GP2","Dark Darker Yet Darker"]);
+scripts.forEach((s,i)=>{
+  if(FREE_NAMES.has(s.name)) s.tier="free";
+  else if(PAID_NAMES.has(s.name)) s.tier="paid";
+  else s.tier="dev";
+});
+
+// Featured catalog entries.
+scripts.push(
+  {name:"Serpent", category:"Combat", id:"catalog-serpent", template:"", tier:"paid", catalogOnly:true, source:"Featured catalog"},
+  {name:"World Devourer", category:"Combat", id:"catalog-world-devourer", template:"", tier:"paid", catalogOnly:true, source:"Featured catalog"}
+);
+
+// copy stats (these were used but never declared, which threw an error on load)
+let copyCounts={}; try{copyCounts=JSON.parse(localStorage.getItem("nebulaNowCopyCounts")||"{}")}catch(e){}
+let copyHistory=[]; try{copyHistory=JSON.parse(localStorage.getItem("nebulaNowCopyHistory")||"[]")}catch(e){}
+
+const state = {
+  category:"All",
+  search:"",
+  savedOnly:false,
+  saved:new Set(JSON.parse(localStorage.getItem("nebulaNowSaved") || "[]"))
+};
+
+const $ = q => document.querySelector(q);
+const usernameInput = $("#usernameInput");
+
+function user() {
+  return usernameInput.value.trim() || "YourUsername";
+}
+function codeFor(s) {
+  if(!s.template) return "";
+  return s.template.replaceAll("{user}", user());
+}
+function getCurrentAccount(){
+  const session=localStorage.getItem("nebulaNowSession")||"";
+  const users=getUsers();
+  return session ? users[session.toLowerCase()] || {username:session,tier:"free"} : null;
+}
+function currentTier(){
+  const a=getCurrentAccount();
+  if(a && (a.dev || String(a.username||"").toLowerCase()==="n")) return "dev";
+  if(a && a.tier==="paid") return "paid";
+  return "free";
+}
+const tierRank={free:1,paid:2,dev:3};
+function canAccess(s){ return tierRank[currentTier()] >= tierRank[s.tier||"free"]; }
+function escapeHTML(v) {
+  return String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+function toast(msg) {
+  const el=$("#toast");
+  el.textContent=msg;
+  el.classList.add("show");
+  clearTimeout(toast.t);
+  toast.t=setTimeout(()=>el.classList.remove("show"),1400);
+}
+async function copy(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const t=document.createElement("textarea");
+    t.value=text;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();
+  }
+  toast("Copied");
+}
+function saveState() {
+  localStorage.setItem("nebulaNowSaved",JSON.stringify([...state.saved]));
+}
+function cats() {
+  return ["All","Combat","Animations","GUIs","Nebula Trusted GUIs"];
+}
+function filtered() {
+  const q=state.search.toLowerCase();
+  return scripts.filter(s => {
+    if(state.savedOnly && !state.saved.has(s.id)) return false;
+    if(state.category!=="All" && s.category!==state.category) return false;
+    if(state.tierFilter!=="all" && (s.tier||"free")!==state.tierFilter) return false;
+    if(state.creatorFilter!=="all" && (s.creator||"Nebula Library")!==state.creatorFilter) return false;
+    if(!q) return true;
+    return `${s.name} ${s.id} ${s.category} ${s.template} ${s.creator||""} ${s.tier||"free"}`.toLowerCase().includes(q);
+  });
+}
+function renderTabs() {
+  const wrap=$("#tabs");
+  wrap.innerHTML="";
+  cats().forEach(cat=>{
+    const b=document.createElement("button");
+    b.className="tab"+(state.category===cat&&!state.savedOnly?" active":"");
+    b.textContent=cat;
+    b.onclick=()=>{state.category=cat;state.savedOnly=false;render();};
+    wrap.appendChild(b);
+  });
+}
+function recordCopy(s){
+  if(!s) return;
+  copyCounts[s.id]=(copyCounts[s.id]||0)+1;
+  localStorage.setItem("nebulaNowCopyCounts",JSON.stringify(copyCounts));
+  copyHistory.unshift({id:s.id,name:s.name,at:new Date().toISOString()});
+  copyHistory=copyHistory.slice(0,30);
+  localStorage.setItem("nebulaNowCopyHistory",JSON.stringify(copyHistory));
+  renderFeaturePanels();
+}
+function openDetails(s){
+  const allowed=canAccess(s), tier=(s.tier||"free").toUpperCase();
+  const shown=!allowed?`${tier} tier locked`:s.catalogOnly?"Catalog entry — no approved module stored":codeFor(s);
+  $("#detailTitle").textContent=s.name;
+  $("#detailBody").innerHTML=`<h3>${escapeHTML(s.name)}</h3><div class="creator-line">${escapeHTML(s.creator||"Nebula Library")}</div><div class="detail-kv"><div><b>TIER</b><span>${tier}</span></div><div><b>CATEGORY</b><span>${escapeHTML(s.category)}</span></div><div><b>ID</b><span>${escapeHTML(s.id)}</span></div><div><b>LOCAL COPIES</b><span>${copyCounts[s.id]||0}</span></div></div><div class="detail-code">${escapeHTML(shown)}</div>`;
+  $("#detailBackdrop").classList.add("show");
+}
+function renderFeed(target,items,empty){
+  const wrap=$(target); if(!wrap) return; wrap.innerHTML="";
+  if(!items.length){wrap.innerHTML=`<div class="empty-note">${escapeHTML(empty)}</div>`;return;}
+  items.forEach(s=>{const c=document.createElement("article");c.className="feed-card";c.innerHTML=`<h4>${escapeHTML(s.name)}</h4><p>${escapeHTML(s.creator||"Nebula Library")} · ${escapeHTML(s.category)}</p><div class="feed-meta"><span>${(s.tier||"free").toUpperCase()}</span><span>${copyCounts[s.id]||0} copies</span></div>`;c.onclick=()=>openDetails(s);wrap.appendChild(c)});
+}
+function renderFeaturePanels(){
+  const tier=currentTier();
+  const counts={free:0,paid:0,dev:0};scripts.forEach(s=>counts[s.tier||"free"]++);
+  if($("#dashFree")) $("#dashFree").textContent=counts.free;
+  if($("#dashPaid")) $("#dashPaid").textContent=counts.paid;
+  if($("#dashDev")) $("#dashDev").textContent=counts.dev;
+  if($("#dashSaved")) $("#dashSaved").textContent=state.saved.size;
+  renderFeed("#recentGrid",[...scripts].sort((a,b)=>(b.addedIndex||0)-(a.addedIndex||0)).slice(0,6),"No recent entries.");
+  renderFeed("#trendingGrid",[...scripts].sort((a,b)=>(copyCounts[b.id]||0)-(copyCounts[a.id]||0)).filter(s=>(copyCounts[s.id]||0)>0).slice(0,6),"Copy some unlocked entries and your local trending list will appear here.");
+  renderFeed("#favoritesGrid",scripts.filter(s=>state.saved.has(s.id)).slice(0,6),"Star entries in Storage to add favorites here.");
+  const acc=getCurrentAccount();
+  if($("#profileName")) $("#profileName").textContent=acc?acc.username:"Guest";
+  if($("#profileTier")) $("#profileTier").textContent=tier.toUpperCase()+" access · local browser profile";
+  if($("#profileFavCount")) $("#profileFavCount").textContent=state.saved.size;
+  if($("#profileCopyCount")) $("#profileCopyCount").textContent=Object.values(copyCounts).reduce((a,b)=>a+b,0);
+  if($("#profileUnlocked")) $("#profileUnlocked").textContent=scripts.filter(canAccess).length;
+  const h=$("#copyHistoryList"); if(h){h.innerHTML=""; if(!copyHistory.length)h.innerHTML='<div class="empty-note">No copies yet.</div>'; else copyHistory.slice(0,8).forEach(x=>{const r=document.createElement("div");r.className="history-row";r.innerHTML=`<span class="history-name">${escapeHTML(x.name)}</span><span class="history-meta">${new Date(x.at).toLocaleString()}</span>`;h.appendChild(r)})}
+}
+function populateCreatorFilter(){
+  const f=$("#creatorFilter"); if(!f) return; const val=f.value||"all";
+  const creators=[...new Set(scripts.map(s=>s.creator||"Nebula Library"))].sort();
+  f.innerHTML='<option value="all">All creators</option>'+creators.map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
+  f.value=creators.includes(val)?val:"all";
+}
+function applyView(){const g=$("#scriptGrid");if(!g)return;g.classList.toggle("compact",state.view==="compact");g.classList.toggle("list-view",state.view==="list");if($("#gridViewBtn"))$("#gridViewBtn").classList.toggle("active",state.view==="grid");if($("#compactViewBtn"))$("#compactViewBtn").classList.toggle("active",state.view!=="grid");}
+
+function render() {
+  renderTabs();
+  const items=filtered();
+  $("#resultText").textContent=`${items.length} script${items.length===1?"":"s"}`;
+  $("#totalText").textContent=`${scripts.length} unique`;
+  $("#miniCount").textContent=scripts.length;
+  $("#statusText").textContent=items.length?"Ready":"No matches";
+  $("#savedToggle").classList.toggle("saved",state.savedOnly);
+  $("#savedToggle").textContent=`★ Saved (${state.saved.size})`;
+  const grid=$("#scriptGrid");
+  grid.innerHTML="";
+  items.forEach(s=>{
+    const el=document.createElement("article");
+    const allowed=canAccess(s);
+    el.className="script"+(allowed?"":" locked")+(s.catalogOnly?" catalog-only":"");
+    const saved=state.saved.has(s.id);
+    const tier=(s.tier||"free").toLowerCase();
+    const displayCode = !allowed
+      ? `${tier.toUpperCase()} tier locked — upgrade access to unlock`
+      : s.catalogOnly
+        ? `${s.source || "Showcase"} catalog entry — approved module not stored`
+        : codeFor(s);
+    const meta = s.catalogOnly ? "SHOWCASE CATALOG" : `Asset ${escapeHTML(s.id)}`;
+    el.innerHTML=`
+      <div class="script-top">
+        <div><h4>${escapeHTML(s.name)}</h4><div class="meta">${meta}</div><div class="creator-line">${escapeHTML(s.creator||"Nebula Library")}</div></div>
+        <div style="display:flex;gap:5px;align-items:flex-start"><span class="tier-badge ${tier}">${tier.toUpperCase()}</span><span class="badge">${escapeHTML(s.category)}</span></div>
+      </div>
+      <div class="code" title="${escapeHTML(displayCode)}">${escapeHTML(displayCode)}</div>
+      <div class="actions">
+        <button class="smallbtn save ${saved?"saved":""}">${saved?"★ Saved":"☆ Save"}</button>
+        <button class="smallbtn cp" ${(!allowed||s.catalogOnly)?"disabled":""}>${!allowed?"Locked":s.catalogOnly?"Catalog":"Copy"}</button>
+      </div><div class="script-extra"><button class="smallbtn details-btn">Details</button></div>`;
+    if(allowed && !s.catalogOnly) el.querySelector(".cp").onclick=e=>{copy(codeFor(s));recordCopy(s);e.currentTarget.animate([{transform:"scale(1)"},{transform:"scale(.9)"},{transform:"scale(1)"}],{duration:220})};
+    el.querySelector(".save").onclick=()=>{
+      if(saved) state.saved.delete(s.id); else state.saved.add(s.id);
+      saveState();render();
+    };
+    el.querySelector(".details-btn").onclick=()=>openDetails(s);
+    grid.appendChild(el);
+  });
+  applyView();
+  renderFeaturePanels();
+}
+populateCreatorFilter();
+$("#searchInput").addEventListener("input",e=>{state.search=e.target.value;render()});
+$("#tierFilter").onchange=e=>{state.tierFilter=e.target.value;render()};
+$("#creatorFilter").onchange=e=>{state.creatorFilter=e.target.value;render()};
+$("#gridViewBtn").onclick=()=>{state.view="grid";localStorage.setItem("nebulaNowView",state.view);render()};
+$("#compactViewBtn").onclick=()=>{state.view=state.view==="compact"?"list":"compact";localStorage.setItem("nebulaNowView",state.view);render();toast(state.view==="compact"?"Compact view":"List view")};
+$("#themeToggle").onclick=()=>{document.body.classList.toggle("light-theme");const light=document.body.classList.contains("light-theme");localStorage.setItem("nebulaNowTheme",light?"light":"dark");$("#themeToggle").textContent=light?"☀ Theme":"☾ Theme"};
+if(localStorage.getItem("nebulaNowTheme")==="light"){document.body.classList.add("light-theme");$("#themeToggle").textContent="☀ Theme";}
+$("#closeDetails").onclick=()=>$("#detailBackdrop").classList.remove("show");
+$("#detailBackdrop").addEventListener("click",e=>{if(e.target===$("#detailBackdrop"))$("#detailBackdrop").classList.remove("show")});
+$("#clearHistoryBtn").onclick=()=>{copyHistory=[];localStorage.removeItem("nebulaNowCopyHistory");renderFeaturePanels();toast("History cleared")};
+usernameInput.addEventListener("input",render);
+$("#savedToggle").onclick=()=>{state.savedOnly=!state.savedOnly;state.category="All";render()};
+$("#copyVisible").onclick=()=>{
+  const items=filtered();
+  if(!items.length) return toast("Nothing to copy");
+  const available=items.filter(s=>canAccess(s) && !s.catalogOnly && codeFor(s));
+  if(!available.length) return toast("No unlocked scripts to copy");
+  copy(available.map(codeFor).join("; ")); available.forEach(recordCopy);
+};
+$("#randomBtn").onclick=()=>{
+  const pool=scripts.filter(s=>canAccess(s));
+  const s=pool[Math.floor(Math.random()*pool.length)];
+  state.search=s.id;
+  $("#searchInput").value=s.id;
+  render();
+  document.querySelector("#storage").scrollIntoView({behavior:"smooth"});
+};
+document.querySelectorAll(".side-item").forEach(el=>el.onclick=()=>{
+  const map={"Combat":"Combat","Animations":"Animations","GUIs":"GUIs","Trusted":"Nebula Trusted GUIs"};
+  state.category=map[el.textContent]||"All";
+  state.savedOnly=false;
+  render();
+  document.querySelector("#storage").scrollIntoView({behavior:"smooth"});
+});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.08});
+document.querySelectorAll(".reveal").forEach(x=>io.observe(x));
+
+
+const authBackdrop = $("#authBackdrop");
+const authTitle = $("#authTitle");
+const authCopy = $("#authCopy");
+const authForm = $("#authForm");
+const authUsername = $("#authUsername");
+const authPassword = $("#authPassword");
+const authConfirm = $("#authConfirm");
+const confirmField = $("#confirmField");
+const authError = $("#authError");
+const authSubmit = $("#authSubmit");
+const authSwitch = $("#authSwitch");
+const authSwitchText = $("#authSwitchText");
+const loginBtn = $("#loginBtn");
+const signupBtn = $("#signupBtn");
+const accountChip = $("#accountChip");
+const accountName = $("#accountName");
+const accountMenu = $("#accountMenu");
+const accountMenuName = $("#accountMenuName");
+let authMode = "login";
+function getUsers(){try{return JSON.parse(localStorage.getItem("nebulaNowUsers")||"{}")}catch{return {}}}
+function setUsers(users){localStorage.setItem("nebulaNowUsers",JSON.stringify(users))}
+function currentSession(){return localStorage.getItem("nebulaNowSession")||""}
+async function sha256(text){const bytes=new TextEncoder().encode(text);const digest=await crypto.subtle.digest("SHA-256",bytes);return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+function setAuthMode(mode){authMode=mode;const signup=mode==="signup";authTitle.textContent=signup?"Sign Up":"Log In";authCopy.textContent=signup?"Create a local Nebula.Now profile for this browser.":"Log in to your local Nebula.Now profile on this browser.";confirmField.style.display=signup?"grid":"none";authConfirm.required=signup;authPassword.autocomplete=signup?"new-password":"current-password";authSubmit.textContent=signup?"Create Account":"Log In";authSwitchText.textContent=signup?"Already have an account?":"Need an account?";authSwitch.textContent=signup?"Log In":"Sign Up";authError.textContent=""}
+function openAuth(mode){setAuthMode(mode);authBackdrop.classList.add("show");authUsername.value=usernameInput.value==="YourUsername"?"":usernameInput.value;authPassword.value="";authConfirm.value="";setTimeout(()=>authUsername.focus(),60)}
+function closeAuth(){authBackdrop.classList.remove("show")}
+function refreshAccountUI(){const session=currentSession();const tier=currentTier();const tierUpper=tier.toUpperCase();const tierLabel=document.querySelector("#accountTierName");const accessLabel=document.querySelector("#currentAccessLabel");const manager=document.querySelector("#tierManagerBtn");if(accessLabel)accessLabel.textContent=tierUpper;if(session){loginBtn.style.display="none";signupBtn.style.display="none";accountChip.style.display="inline-flex";accountName.textContent=session+" · "+tierUpper;accountMenuName.innerHTML="Signed in as "+escapeHTML(session)+(tier==="dev"?' <span class="dev-badge">DEV</span>':"");if(tierLabel)tierLabel.textContent="Tier: "+tierUpper;if(manager)manager.style.display=tier==="dev"?"block":"none";usernameInput.value=session;render()}else{loginBtn.style.display="";signupBtn.style.display="";accountChip.style.display="none";accountMenu.classList.remove("show");if(tierLabel)tierLabel.textContent="Tier: FREE";if(manager)manager.style.display="none";if(accessLabel)accessLabel.textContent="FREE";render()}}
+loginBtn.onclick=()=>openAuth("login");
+signupBtn.onclick=()=>openAuth("signup");
+$("#closeAuth").onclick=closeAuth;
+authBackdrop.addEventListener("click",e=>{if(e.target===authBackdrop)closeAuth()});
+authSwitch.onclick=()=>setAuthMode(authMode==="login"?"signup":"login");
+$("#executorsNavBtn").onclick=()=>$("#executors").scrollIntoView({behavior:"smooth"});
+accountChip.onclick=()=>accountMenu.classList.toggle("show");
+$("#goStorageBtn").onclick=()=>{accountMenu.classList.remove("show");$("#storage").scrollIntoView({behavior:"smooth"})};
+const tierManagerBtn=$("#tierManagerBtn");
+if(tierManagerBtn) tierManagerBtn.onclick=()=>{
+  if(currentTier()!=="dev") return;
+  const name=prompt("Local username to toggle Paid access:");
+  if(!name) return;
+  const users=getUsers(); const key=name.trim().toLowerCase();
+  if(!users[key]) return toast("Local account not found");
+  if(key==="n") return toast("N stays Dev");
+  users[key].tier = users[key].tier==="paid" ? "free" : "paid";
+  setUsers(users);
+  toast(`${users[key].username}: ${users[key].tier.toUpperCase()}`);
+};
+$("#logoutBtn").onclick=()=>{localStorage.removeItem("nebulaNowSession");accountMenu.classList.remove("show");usernameInput.value="YourUsername";refreshAccountUI();render();toast("Logged out")};
+document.addEventListener("click",e=>{if(!accountMenu.contains(e.target)&&!accountChip.contains(e.target))accountMenu.classList.remove("show")});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeAuth();accountMenu.classList.remove("show");$("#detailBackdrop").classList.remove("show")}});
+authForm.addEventListener("submit",async e=>{e.preventDefault();authError.textContent="";const username=authUsername.value.trim();const password=authPassword.value;const users=getUsers();const key=username.toLowerCase();if(authMode==="signup" && !/^[A-Za-z0-9_]{3,32}$/.test(username)){authError.textContent="Use a valid Roblox-style username (3–32 letters, numbers or _).";return} if(authMode==="login" && !/^[A-Za-z0-9_]{1,32}$/.test(username)){authError.textContent="Enter a valid username.";return}if(password.length<4){authError.textContent="Password must be at least 4 characters.";return}authSubmit.disabled=true;authSubmit.textContent=authMode==="signup"?"Creating...":"Logging in...";try{const hash=await sha256(password);if(authMode==="signup"){if(users[key]){authError.textContent="That local account already exists.";return}if(password!==authConfirm.value){authError.textContent="Passwords do not match.";return}users[key]={username,hash,tier:"free"};setUsers(users);localStorage.setItem("nebulaNowSession",username);closeAuth();refreshAccountUI();toast("Account created")}else{if(!users[key]||users[key].hash!==hash){authError.textContent="Username or password is incorrect.";return}localStorage.setItem("nebulaNowSession",users[key].username);closeAuth();refreshAccountUI();toast("Logged in")}}catch(err){authError.textContent="This browser could not create the local login."}finally{authSubmit.disabled=false;authSubmit.textContent=authMode==="signup"?"Create Account":"Log In"}});
+
+
+/* WEAO STATUS + BUILT-IN DEV PROFILE */
+const DEV_USER = "N";
+const DEV_HASH = "16d74232d666243e3dd9711daaef2b7538f849efaa62cf19f91a97e82c420e34";
+
+function seedDevAccount(){
+  const users = getUsers();
+  if(!users.n){
+    users.n = {username:DEV_USER, hash:DEV_HASH, dev:true, tier:"dev"};
+  } else {
+    users.n.dev = true; users.n.tier = "dev";
+  }
+  setUsers(users);
+}
+seedDevAccount();
+
+const weaoFallback = [
+  {title:"Potassium", platform:"Windows", suncPercentage:100, uncPercentage:99, updateStatus:true, detected:true, free:false},
+  {title:"Matcha", platform:"Windows", suncPercentage:null, uncPercentage:null, updateStatus:true, detected:false, free:false},
+  {title:"Xeno", platform:"Windows", suncPercentage:41, uncPercentage:81, updateStatus:true, detected:true, free:true},
+  {title:"Bunni.lol", platform:"Windows", suncPercentage:100, uncPercentage:99, updateStatus:true, detected:true, free:true},
+  {title:"Photon", platform:"Windows", suncPercentage:null, uncPercentage:null, updateStatus:true, detected:false, free:false}
+];
+
+function safeNum(v){
+  return Number.isFinite(Number(v)) ? `${Number(v)}%` : "N/A";
+}
+function safeText(v, fallback="Unknown"){
+  return (v===null || v===undefined || v==="") ? fallback : String(v);
+}
+function renderExecutors(items, source){
+  const grid = document.querySelector("#executorGrid");
+  const status = document.querySelector("#weaoStatusText");
+  if(!grid || !status) return;
+
+  const visible = (Array.isArray(items) ? items : [])
+    .filter(x => x && x.hidden !== true && x.title)
+    .sort((a,b)=>String(a.title).localeCompare(String(b.title)));
+
+  status.textContent = `${visible.length} tracked · ${source}`;
+
+  grid.innerHTML = visible.map(x => {
+    const updated = x.updateStatus === true;
+    const detected = x.detected === true;
+    const free = x.free === true;
+    const platform = safeText(x.platform, safeText(x.type, "Unknown"));
+    return `
+      <article class="executor-card">
+        <div class="tag">${escapeHTML(platform)} <span>•</span> ${free ? "FREE" : "PAID / OTHER"}</div>
+        <h3>${escapeHTML(x.title)}</h3>
+        <div class="executor-meta">
+          <div><small>Device</small><b>${escapeHTML(platform)}</b></div>
+          <div><small>sUNC</small><b>${safeNum(x.suncPercentage)}</b></div>
+          <div><small>UNC</small><b>${safeNum(x.uncPercentage)}</b></div>
+          <div><small>Version</small><b>${escapeHTML(safeText(x.version,"N/A"))}</b></div>
+        </div>
+        <div class="executor-flags">
+          <span class="executor-flag ${updated ? "good":"bad"}">${updated ? "Updated":"Outdated"}</span>
+          <span class="executor-flag ${detected ? "bad":"good"}">${detected ? "Detected":"Not marked detected"}</span>
+          ${x.keysystem === true ? '<span class="executor-flag">Key system</span>' : ''}
+          ${x.decompiler === true ? '<span class="executor-flag">Decompiler</span>' : ''}
+        </div>
+      </article>`;
+  }).join("");
+}
+
+async function loadWEAO(){
+  try{
+    const res = await fetch("https://weao-proxy-api.vercel.app/api/status/exploits", {
+      cache:"no-store"
+    });
+    if(!res.ok) throw new Error("status "+res.status);
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : (Array.isArray(data.exploits) ? data.exploits : []);
+    if(!list.length) throw new Error("empty response");
+    renderExecutors(list, "Live WEAO");
+  }catch(err){
+    renderExecutors(weaoFallback, "WEAO fallback");
+  }
+}
+loadWEAO();
+
+const executorSignupBtn = document.querySelector("#executorSignupBtn");
+if(executorSignupBtn) executorSignupBtn.onclick = ()=>openAuth("signup");
+
+const floaters=$("#floaters");
+for(let i=0;i<9;i++){
+  const p=document.createElement("div");
+  p.className="pix";
+  p.style.top=(8+Math.random()*82)+"%";
+  p.style.left="-30px";
+  p.style.animationDuration=(18+Math.random()*20)+"s";
+  p.style.animationDelay=(-Math.random()*25)+"s";
+  p.style.transform=`scale(${.65+Math.random()*.8})`;
+  floaters.appendChild(p);
+}
+render();
+refreshAccountUI();
+</script>
+
+<script>
+/* Nebula.Now fail-safe boot guard */
+(function(){
+  function showAll(){
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('visible'); });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', showAll, {once:true});
+  } else {
+    showAll();
+  }
+  window.addEventListener('error', function(){
+    showAll();
+  });
+})();
+</script>
+
+
+<!-- ===== Nebula.Now draggable quick-copy widget (uses the page's own catalog, tiers, saved list and username) ===== -->
+<style>
+#nq-open{position:fixed;right:18px;bottom:18px;z-index:9998;padding:9px 16px;border-radius:8px;border:1px solid var(--line2,#242424);background:var(--panel,#090909);color:var(--text,#f4f4f4);font:650 12px Inter,system-ui,sans-serif;cursor:pointer;transition:.2s}
+#nq-open:hover{border-color:#666;transform:translateY(-2px)}
+#nq{--q-bg:#050505;--q-panel:#090909;--q-panel2:#141414;--q-text:#f4f4f4;--q-muted:#858585;--q-accent:#f3f3f3;--q-line:#242424;
+  position:fixed;z-index:9999;width:min(780px,94vw);height:min(470px,82vh);min-width:320px;min-height:260px;display:flex;flex-direction:column;
+  background:var(--q-bg);color:var(--q-text);border:1px solid var(--q-line);border-radius:10px;box-shadow:0 24px 70px rgba(0,0,0,.55);
+  font:13px Inter,system-ui,sans-serif;resize:both;overflow:hidden}
+#nq[hidden]{display:none}
+body.light-theme #nq[data-theme=site]{--q-bg:#efefef;--q-panel:#fff;--q-panel2:#e4e4e4;--q-text:#111;--q-muted:#666;--q-accent:#111;--q-line:#ccc}
+#nq[data-theme=midnight]{--q-bg:#0a0f1f;--q-panel:#111a33;--q-panel2:#18244a;--q-text:#e8eeff;--q-muted:#8c9ac7;--q-accent:#4da3ff;--q-line:#22305e}
+#nq[data-theme=crimson]{--q-bg:#120808;--q-panel:#1c0e0e;--q-panel2:#2a1414;--q-text:#ffecec;--q-muted:#c79a9a;--q-accent:#ff4d5e;--q-line:#3a1d1d}
+#nq[data-theme=emerald]{--q-bg:#08120d;--q-panel:#0e1d15;--q-panel2:#15291e;--q-text:#e9fff3;--q-muted:#8fc7a8;--q-accent:#2ed48a;--q-line:#1d3a2b}
+#nq[data-theme=violet]{--q-bg:#0d0a1a;--q-panel:#15102b;--q-panel2:#1f1840;--q-text:#efeaff;--q-muted:#a99bd6;--q-accent:#8b7cff;--q-line:#2e2559}
+#nq button{background:var(--q-panel);color:var(--q-text);border:1px solid var(--q-line);border-radius:6px;padding:5px 11px;font:inherit;cursor:pointer}
+#nq button:hover{border-color:var(--q-accent)}
+#nq button[disabled]{opacity:.45;cursor:not-allowed}
+#nq input{background:var(--q-panel);color:var(--q-text);border:1px solid var(--q-line);border-radius:6px;padding:7px 9px;font:inherit;min-width:0}
+#nq-bar{display:flex;align-items:center;gap:8px;height:46px;flex:none;padding:0 10px 0 14px;border-bottom:1px solid var(--q-line);cursor:grab;user-select:none;touch-action:none}
+#nq-bar:active{cursor:grabbing}
+#nq-bar .dots{display:flex;gap:5px;margin-right:6px}
+#nq-bar .dots i{width:8px;height:8px;border-radius:50%;background:var(--q-muted);opacity:.7}
+#nq-bar b{font-weight:700}
+#nq-note{color:var(--q-accent);font-weight:650;opacity:0;transition:opacity .2s;margin-left:6px}
+#nq-note.on{opacity:1}
+.nq-sp{flex:1}
+#nq-body{display:flex;flex:1;min-height:0}
+#nq-cats{width:150px;flex:none;padding:14px 10px;border-right:1px solid var(--q-line);overflow:auto}
+#nq-cats small{display:block;color:var(--q-muted);font-size:10px;letter-spacing:.08em;margin:0 0 8px 6px}
+#nq-cats button{display:block;width:100%;text-align:left;margin-bottom:6px;background:transparent;border-color:transparent}
+#nq-cats button.on{background:var(--q-panel2);border-color:var(--q-line)}
+#nq-main{flex:1;display:flex;flex-direction:column;padding:14px 16px;min-width:0}
+.nq-row{display:flex;gap:10px;margin-bottom:12px}
+.nq-row input:first-child{flex:1}.nq-row input:last-child{width:170px}
+#nq-list{flex:1;overflow:auto}
+.nq-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:16px}
+.nq-item .nq-info{flex:1;min-width:0}
+.nq-item b{display:block;margin-bottom:4px}
+.nq-item code{color:var(--q-muted);font:12px Consolas,ui-monospace,monospace;word-break:break-all}
+.nq-tier{display:inline-block;margin-left:8px;padding:1px 6px;border:1px solid var(--q-line);border-radius:4px;font-size:9px;letter-spacing:.06em;color:var(--q-muted);vertical-align:middle}
+.nq-empty{color:var(--q-muted)}
+@media(max-width:520px){#nq-cats{width:106px}.nq-row input:last-child{width:110px}}
+</style>
+
+<button id="nq-open" type="button">Quick Library</button>
+<div id="nq" data-theme="site" hidden>
+  <div id="nq-bar">
+    <span class="dots"><i></i><i></i><i></i></span><b>Nebula.Now</b><span id="nq-note">Copied</span><span class="nq-sp"></span>
+    <button id="nq-dl" type="button" title="Download the Windows app (.bat)">Download</button>
+    <button id="nq-theme" type="button">Theme</button>
+    <button id="nq-copyall" type="button">Copy</button>
+    <button id="nq-close" type="button" aria-label="Close">&#x2715;</button>
+  </div>
+  <div id="nq-body">
+    <aside id="nq-cats"></aside>
+    <div id="nq-main">
+      <div class="nq-row"><input id="nq-q" placeholder="Search names, IDs, categories"><input id="nq-u" placeholder="YourUsername"></div>
+      <div id="nq-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  if (typeof scripts === "undefined") return; // catalog not loaded
+  var $ = function(id){ return document.getElementById(id); };
+  var box=$("nq"), bar=$("nq-bar"), list=$("nq-list"), cats=$("nq-cats"), q=$("nq-q"), u=$("nq-u"), note=$("nq-note"), site=$("usernameInput");
+  var CATS=["All","Combat","Animations","GUIs","Nebula Trusted GUIs","Saved"];
+  var THEMES=["site","midnight","crimson","emerald","violet"];
+  var KEY="nebulaNowWidget";
+  var st={theme:"site",x:null,y:null};
+  try{ Object.assign(st, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){}
+  var cat="All";
+  function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+
+  function userName(){ return u.value.trim() || "YourUsername"; }
+  function codeOf(s){ return s.template ? s.template.split("{user}").join(userName()) : ""; }
+  function allowed(s){ try{ return canAccess(s); }catch(e){ return (s.tier||"free")==="free"; } }
+  function usable(s){ return allowed(s) && !!s.template; }
+  function isSaved(s){ return state && state.saved && state.saved.has(s.id); }
+
+  function flash(msg){
+    if (typeof toast==="function") { toast(msg); return; }
+    note.textContent=msg; note.classList.add("on"); clearTimeout(flash.t);
+    flash.t=setTimeout(function(){ note.classList.remove("on"); },1100);
+  }
+  function doCopy(text, items){
+    var done=function(){
+      note.textContent="Copied"; note.classList.add("on"); clearTimeout(flash.t);
+      flash.t=setTimeout(function(){ note.classList.remove("on"); },1100);
+      try{ (items||[]).forEach(function(s){ if (typeof recordCopy==="function") recordCopy(s); }); }catch(e){}
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done,function(){});
+    else { var t=document.createElement("textarea"); t.value=text; t.style.cssText="position:fixed;opacity:0"; document.body.appendChild(t); t.select(); try{document.execCommand("copy");done();}catch(e){} t.remove(); }
+  }
+
+  function visible(){
+    var s=q.value.trim().toLowerCase();
+    return scripts.filter(function(it){
+      if (cat==="Saved") { if(!isSaved(it)) return false; }
+      else if (cat!=="All" && it.category!==cat) return false;
+      if(!s) return true;
+      return (it.name+" "+it.id+" "+it.category+" "+(it.template||"")+" "+(it.creator||"")+" "+(it.tier||"free")).toLowerCase().indexOf(s)>=0;
+    });
+  }
+  function el(tag,text,cls){ var n=document.createElement(tag); if(text!=null) n.textContent=text; if(cls) n.className=cls; return n; }
+
+  function renderCats(){
+    cats.textContent=""; cats.appendChild(el("small","STORAGE"));
+    CATS.forEach(function(c){
+      var b=el("button",c, c===cat?"on":""); b.type="button";
+      b.onclick=function(){ cat=c; renderCats(); renderList(); };
+      cats.appendChild(b);
+    });
+  }
+  function renderList(){
+    list.textContent="";
+    var items=visible();
+    if(!items.length){ list.appendChild(el("div","Nothing here yet.","nq-empty")); return; }
+    items.forEach(function(it){
+      var row=el("div",null,"nq-item"), info=el("div",null,"nq-info");
+      var title=el("b",it.name); title.appendChild(el("span",(it.tier||"free").toUpperCase(),"nq-tier"));
+      info.appendChild(title);
+      var ok=allowed(it);
+      info.appendChild(el("code", !ok ? (it.tier||"free").toUpperCase()+" tier locked" : (it.template ? codeOf(it) : "Catalog entry - no module stored")));
+      var star=el("button", isSaved(it)?"\u2605":"\u2606"); star.type="button";
+      star.onclick=function(){
+        if(isSaved(it)) state.saved.delete(it.id); else state.saved.add(it.id);
+        try{ saveState(); }catch(e){} try{ render(); }catch(e){}
+        renderList();
+      };
+      var cp=el("button","Copy"); cp.type="button"; cp.disabled=!usable(it);
+      cp.onclick=function(){ doCopy(codeOf(it),[it]); };
+      row.appendChild(info); row.appendChild(star); row.appendChild(cp); list.appendChild(row);
+    });
+  }
+  function applyTheme(){ box.setAttribute("data-theme",st.theme); $("nq-theme").textContent="Theme: "+st.theme; }
+
+  // drag by the title bar (mouse + touch)
+  var drag=null;
+  bar.addEventListener("pointerdown",function(e){
+    if(e.target.closest("button")) return;
+    var r=box.getBoundingClientRect(); drag={dx:e.clientX-r.left,dy:e.clientY-r.top};
+    bar.setPointerCapture(e.pointerId);
+  });
+  bar.addEventListener("pointermove",function(e){
+    if(!drag) return;
+    st.x=Math.min(Math.max(0,e.clientX-drag.dx),window.innerWidth-80);
+    st.y=Math.min(Math.max(0,e.clientY-drag.dy),window.innerHeight-46);
+    box.style.left=st.x+"px"; box.style.top=st.y+"px";
+  });
+  bar.addEventListener("pointerup",function(){ if(drag){ drag=null; persist(); } });
+
+  function place(){
+    var r=box.getBoundingClientRect();
+    var x=st.x==null?(window.innerWidth-r.width)/2:st.x, y=st.y==null?(window.innerHeight-r.height)/2:st.y;
+    box.style.left=Math.min(Math.max(0,x),Math.max(0,window.innerWidth-80))+"px";
+    box.style.top=Math.min(Math.max(0,y),Math.max(0,window.innerHeight-46))+"px";
+  }
+  $("nq-open").onclick=function(){ u.value=(site&&site.value&&site.value!=="YourUsername")?site.value:u.value; box.hidden=false; place(); renderList(); };
+  $("nq-close").onclick=function(){ box.hidden=true; };
+  $("nq-theme").onclick=function(){ st.theme=THEMES[(THEMES.indexOf(st.theme)+1)%THEMES.length]; applyTheme(); persist(); };
+  $("nq-copyall").onclick=function(){ var items=visible().filter(usable); if(items.length) doCopy(items.map(codeOf).join("\n"),items); };
+  q.oninput=renderList;
+  u.oninput=function(){ if(site){ site.value=u.value; site.dispatchEvent(new Event("input",{bubbles:true})); } renderList(); };
+  if(site) site.addEventListener("input",function(){ if(document.activeElement!==u){ u.value=site.value==="YourUsername"?"":site.value; if(!box.hidden) renderList(); } });
+  window.addEventListener("resize",function(){ if(!box.hidden) place(); });
+  if(THEMES.indexOf(st.theme)<0) st.theme="site";
+  applyTheme(); renderCats();
+})();
+</script>
+<!-- ===== end quick-copy widget ===== -->
+
+
+<!-- ===== Download button: builds NebulaNow.bat from this page's live catalog ===== -->
+<script>
+(function(){
+  var B64 = "QGVjaG8gb2ZmCnNldGxvY2FsIERpc2FibGVEZWxheWVkRXhwYW5zaW9uCmNoY3AgNjUwMDEgPm51bAptb2RlIGNvbjogY29scz0xMTAKdGl0bGUgTmVidWxhLk5vdwpyZW0gX19EQVRBX18Kc2V0bG9jYWwgRW5hYmxlRGVsYXllZEV4cGFuc2lvbgoKc2V0ICJLMD1BbGwiCnNldCAiSzE9Q29tYmF0IgpzZXQgIksyPUFuaW1hdGlvbnMiCnNldCAiSzM9R1VJcyIKc2V0ICJLND1OZWJ1bGEgVHJ1c3RlZCBHVUlzIgpzZXQgIks1PVNhdmVkIgpzZXQgIlROMD1OZWJ1bGEgRGFyayIKc2V0ICJUQzA9MEYiCnNldCAiVE4xPU1pZG5pZ2h0IgpzZXQgIlRDMT0xRiIKc2V0ICJUTjI9Q3JpbXNvbiIKc2V0ICJUQzI9MEMiCnNldCAiVE4zPUVtZXJhbGQiCnNldCAiVEMzPTBBIgpzZXQgIlROND1MaWdodCIKc2V0ICJUQzQ9RjAiCnNldCAiVE41PVZpb2xldCIKc2V0ICJUQzU9MEQiCgpzZXQgIlU9WW91clVzZXJuYW1lIgpzZXQgIlNBVkVEPSwiCnNldCAiVEg9MCIKc2V0ICJDST0wIgpzZXQgIlE9IgpzZXQgIk1TRz0iCnNldCAiU0hPV049MCIKc2V0ICJDRkc9JUFQUERBVEElXE5lYnVsYU5vd1xzZXR0aW5ncy5jbWQiCnNldCAiVE1QRj0lVEVNUCVcbmVidWxhbm93X2NvcHkudHh0IgppZiBleGlzdCAiIUNGRyEiIGNhbGwgIiFDRkchIgppZiBub3QgIiFTQVZFRFNJRyEiPT0iIVNJRyEiIHNldCAiU0FWRUQ9LCIKY2FsbCA6dGhlbWUKCjptZW51CmNscwpmb3IgJSVjIGluICghQ0khKSBkbyBzZXQgIkNBVD0hSyUlYyEiCmZvciAlJXQgaW4gKCFUSCEpIGRvIHNldCAiVE5BTUU9IVROJSV0ISIKZWNoby4KZWNobyAgIE5FQlVMQS5OT1cgICBDYXRlZ29yeTogIUNBVCEgICBVc2VyOiAhVSEgICBTZWFyY2g6ICFRISAgIFRoZW1lOiAhVE5BTUUhCmVjaG8gICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KZWNoby4Kc2V0ICJTSE9XTj0wIgpmb3IgL0wgJSVpIGluICgxLDEsJUNPVU5UJSkgZG8gKAogIGNhbGwgOm1hdGNoICUlaQogIGlmICIhT0tNISI9PSIxIiAoCiAgICBzZXQgL2EgU0hPV04rPTEKICAgIHNldCAiTSFTSE9XTiE9JSVpIgogICAgY2FsbCA6YnVpbGQgJSVpCiAgICBzZXQgIlNUQVI9ICIKICAgIGlmIG5vdCAiIVNBVkVEOiwlJWksPSEiPT0iIVNBVkVEISIgc2V0ICJTVEFSPSoiCiAgICBlY2hvICAgWyFTSE9XTiFdICFTVEFSISAhTiUlaSEKICAgIGVjaG8gICAgICAgICAhT1VUIQogICAgZWNoby4KICApCikKaWYgIiFTSE9XTiEiPT0iMCIgZWNobyAgIE5vdGhpbmcgaGVyZSB5ZXQuCmVjaG8gICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KZWNobyAgIFtudW1iZXJdIGNvcHkgICBbQV0gY29weSBhbGwgICBbU10gc3RhciAgIFtGXSBzZWFyY2ggICBbQ10gY2F0ZWdvcnkgICBbVV0gdXNlcm5hbWUgICBbVF0gdGhlbWUgICBbWF0gZXhpdAppZiBkZWZpbmVkIE1TRyBlY2hvICAgIU1TRyEKc2V0ICJNU0c9IgpzZXQgIklOPSIKc2V0IC9wICJJTj0gID4gIgppZiBub3QgZGVmaW5lZCBJTiBnb3RvIG1lbnUKc2V0ICJJTj0hSU46Ij0hIgppZiBub3QgZGVmaW5lZCBJTiBnb3RvIG1lbnUKc2V0ICJUPSFJTiEiCmZvciAlJWQgaW4gKDAgMSAyIDMgNCA1IDYgNyA4IDkpIGRvIHNldCAiVD0hVDolJWQ9ISIKaWYgbm90IGRlZmluZWQgVCBnb3RvIGRvY29weQppZiAvaSAiIUlOISI9PSJhIiBnb3RvIGNvcHlhbGwKaWYgL2kgIiFJTiEiPT0icyIgZ290byBkb3N0YXIKaWYgL2kgIiFJTiEiPT0iZiIgZ290byBkb3NlYXJjaAppZiAvaSAiIUlOISI9PSJjIiBnb3RvIGRvY2F0CmlmIC9pICIhSU4hIj09InUiIGdvdG8gZG91c2VyCmlmIC9pICIhSU4hIj09InQiIGdvdG8gZG90aGVtZQppZiAvaSAiIUlOISI9PSJ4IiBnb3RvIHF1aXQKZ290byBtZW51Cgo6ZG9jb3B5CnNldCAiTlVNSU49IUlOISIKY2FsbCA6cmVzb2x2ZQppZiBub3QgZGVmaW5lZCBJRCAoCiAgc2V0ICJNU0c9VGhhdCBudW1iZXIgaXMgbm90IGluIHRoZSBsaXN0LiIKICBnb3RvIG1lbnUKKQpjYWxsIDpidWlsZCAhSUQhCj4iIVRNUEYhIiBlY2hvKCFPVVQhCmNsaXAgPCAiIVRNUEYhIgpmb3IgJSVrIGluICghSUQhKSBkbyBzZXQgIk1TRz1Db3BpZWQ6ICFOJSVrISIKZ290byBtZW51Cgo6Y29weWFsbAppZiAiIVNIT1dOISI9PSIwIiBnb3RvIG1lbnUKaWYgZXhpc3QgIiFUTVBGISIgZGVsICIhVE1QRiEiID5udWwgMj4mMQpmb3IgL0wgJSVuIGluICgxLDEsIVNIT1dOISkgZG8gKAogIHNldCAiSUQ9IU0lJW4hIgogIGNhbGwgOmJ1aWxkICFJRCEKICA+PiIhVE1QRiEiIGVjaG8oIU9VVCEKKQpjbGlwIDwgIiFUTVBGISIKc2V0ICJNU0c9Q29waWVkICFTSE9XTiEgc2NyaXB0KHMpLiIKZ290byBtZW51Cgo6ZG9zdGFyCmNhbGwgOmFza2lkCmlmIG5vdCBkZWZpbmVkIElEIGdvdG8gbWVudQpmb3IgJSVrIGluICghSUQhKSBkbyAoCiAgaWYgIiFTQVZFRDosJSVrLD0hIj09IiFTQVZFRCEiICgKICAgIHNldCAiU0FWRUQ9IVNBVkVEISUlaywiCiAgKSBlbHNlICgKICAgIHNldCAiU0FWRUQ9IVNBVkVEOiwlJWssPSwhIgogICkKKQpjYWxsIDpzYXZlCmdvdG8gbWVudQoKOmRvc2VhcmNoCnNldCAiTkVXUT0iCnNldCAvcCAiTkVXUT0gIFNlYXJjaCAoZW1wdHkgdG8gY2xlYXIpOiAiCmlmIG5vdCBkZWZpbmVkIE5FV1EgKAogIHNldCAiUT0iCiAgZ290byBtZW51CikKc2V0ICJUPSFORVdRISIKZm9yICUlYyBpbiAoYSBiIGMgZCBlIGYgZyBoIGkgaiBrIGwgbSBuIG8gcCBxIHIgcyB0IHUgdiB3IHggeSB6IDAgMSAyIDMgNCA1IDYgNyA4IDkgXyAuIC0pIGRvIHNldCAiVD0hVDolJWM9ISIKc2V0ICJUPSFUOiA9ISIKaWYgZGVmaW5lZCBUICgKICBzZXQgIk1TRz1TZWFyY2ggY2FuIG9ubHkgdXNlIGxldHRlcnMsIG51bWJlcnMsIHNwYWNlcywgXyAuIC0iCiAgZ290byBtZW51CikKc2V0ICJRPSFORVdRISIKZ290byBtZW51Cgo6ZG9jYXQKc2V0IC9hIENJPShDSSsxKSUlNgpjYWxsIDpzYXZlCmdvdG8gbWVudQoKOmRvdXNlcgpzZXQgIk5FV1U9IgpzZXQgL3AgIk5FV1U9ICBVc2VybmFtZSAobGV0dGVycywgbnVtYmVycywgXyk6ICIKaWYgbm90IGRlZmluZWQgTkVXVSBnb3RvIG1lbnUKc2V0ICJUPSFORVdVISIKZm9yICUlYyBpbiAoYSBiIGMgZCBlIGYgZyBoIGkgaiBrIGwgbSBuIG8gcCBxIHIgcyB0IHUgdiB3IHggeSB6IDAgMSAyIDMgNCA1IDYgNyA4IDkgXykgZG8gc2V0ICJUPSFUOiUlYz0hIgppZiBkZWZpbmVkIFQgKAogIHNldCAiTVNHPVVzZXJuYW1lcyBjYW4gb25seSB1c2UgbGV0dGVycywgbnVtYmVycyBhbmQgXyIKICBnb3RvIG1lbnUKKQpzZXQgIlU9IU5FV1UhIgpjYWxsIDpzYXZlCmdvdG8gbWVudQoKOmRvdGhlbWUKc2V0IC9hIFRIPShUSCsxKSUlNgpjYWxsIDp0aGVtZQpjYWxsIDpzYXZlCmdvdG8gbWVudQoKOnF1aXQKY2FsbCA6c2F2ZQpleGl0IC9iCgo6dGhlbWUKZm9yICUldCBpbiAoIVRIISkgZG8gY29sb3IgIVRDJSV0IQpleGl0IC9iCgo6c2F2ZQppZiBub3QgZXhpc3QgIiVBUFBEQVRBJVxOZWJ1bGFOb3ciIG1rZGlyICIlQVBQREFUQSVcTmVidWxhTm93IiA+bnVsIDI+JjEKKAogIGVjaG8gc2V0ICJVPSFVISIKICBlY2hvIHNldCAiU0FWRUQ9IVNBVkVEISIKICBlY2hvIHNldCAiVEg9IVRIISIKICBlY2hvIHNldCAiQ0k9IUNJISIKICBlY2hvIHNldCAiU0FWRURTSUc9IVNJRyEiCikgPiAiIUNGRyEiIDI+bnVsCmV4aXQgL2IKCjpidWlsZApzZXQgIk9VVD0hUCUxISIKaWYgIiFIJTEhIj09IjEiIHNldCAiT1VUPSFPVVQhIVUhIVMlMSEiCmV4aXQgL2IKCjptYXRjaApzZXQgIk9LTT0xIgppZiAvaSAiIUNBVCEiPT0iU2F2ZWQiICgKICBpZiAiIVNBVkVEOiwlMSw9ISI9PSIhU0FWRUQhIiBzZXQgIk9LTT0wIgopCmlmIC9pIG5vdCAiIUNBVCEiPT0iU2F2ZWQiIGlmIC9pIG5vdCAiIUNBVCEiPT0iQWxsIiBpZiAvaSBub3QgIiFDJTEhIj09IiFDQVQhIiBzZXQgIk9LTT0wIgppZiBkZWZpbmVkIFEgaWYgIiFPS00hIj09IjEiICgKICBzZXQgIkhBWT0hTiUxISAhQyUxISAhSSUxISIKICBzZXQgIlJFU1Q9IUhBWTolUSU9ISIKICBpZiAiIVJFU1QhIj09IiFIQVkhIiBzZXQgIk9LTT0wIgopCmV4aXQgL2IKCjphc2tpZApzZXQgIk5VTUlOPSIKc2V0IC9wICJOVU1JTj0gIE51bWJlcjogIgpjYWxsIDpyZXNvbHZlCmV4aXQgL2IKCjpyZXNvbHZlCnNldCAiSUQ9IgppZiBub3QgZGVmaW5lZCBOVU1JTiBleGl0IC9iCnNldCAiVD0hTlVNSU4hIgpmb3IgJSVkIGluICgwIDEgMiAzIDQgNSA2IDcgOCA5KSBkbyBzZXQgIlQ9IVQ6JSVkPSEiCmlmIGRlZmluZWQgVCBleGl0IC9iCmlmIG5vdCAiIU5VTUlOOn40ISI9PSIiIGV4aXQgL2IKZm9yIC9mICJ0b2tlbnM9KiBkZWxpbXM9MCIgJSV6IGluICgiIU5VTUlOISIpIGRvIHNldCAiTlVNSU49JSV6IgpzZXQgL2EgTlVNSz0hTlVNSU4hIDI+bnVsCmlmICFOVU1LISBsc3MgMSBleGl0IC9iCmlmICFOVU1LISBndHIgIVNIT1dOISBleGl0IC9iCmZvciAlJWsgaW4gKCFOVU1LISkgZG8gc2V0ICJJRD0hTSUlayEiCmV4aXQgL2IK";
+  function build(){
+    var tpl = new TextDecoder().decode(Uint8Array.from(atob(B64), function(c){ return c.charCodeAt(0); }));
+    var ok = scripts.filter(function(s){
+      var allowed = true; try{ allowed = canAccess(s); }catch(e){}
+      return allowed && s.template;
+    });
+    var clean = function(v){ return String(v).replace(/[^\x20-\x7E]/g, "?").replace(/"/g, "").replace(/%/g, "%%"); };
+    var code  = function(v){ return String(v).replace(/[\r\n]/g, "").replace(/%/g, "%%"); };
+    var lines = [], h = 7;
+    ok.forEach(function(s, i){
+      var n = i + 1, parts = s.template.split("{user}");
+      var P = parts[0], S = parts.slice(1).join("YourUsername"), H = parts.length > 1 ? 1 : 0;
+      lines.push('set "N'+n+'='+clean(s.name)+'"', 'set "C'+n+'='+clean(s.category)+'"', 'set "I'+n+'='+clean(s.id)+'"',
+                 'set "P'+n+'='+code(P)+'"', 'set "S'+n+'='+code(S)+'"', 'set "H'+n+'='+H+'"');
+      var key = s.name + "|" + s.template;
+      for (var k = 0; k < key.length; k++) h = (h * 31 + key.charCodeAt(k)) >>> 0;
+    });
+    lines.push('set "COUNT='+ok.length+'"', 'set "SIG='+h+'"');
+    return { text: tpl.replace("rem __DATA__", lines.join("\n")).replace(/\n/g, "\r\n"), count: ok.length };
+  }
+  function download(){
+    try{
+      var r = build();
+      var blob = new Blob([r.text], { type: "text/plain;charset=utf-8" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "NebulaNow.bat";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+      if (typeof toast === "function") toast("Downloaded NebulaNow.bat (" + r.count + " scripts)");
+    }catch(e){ if (typeof toast === "function") toast("Download failed"); }
+  }
+  ["downloadBtn","nq-dl"].forEach(function(id){ var b=document.getElementById(id); if(b) b.onclick=download; });
+})();
+</script>
+<!-- ===== end download button ===== -->
+
+</body>
+</html>
